@@ -1,0 +1,134 @@
+/**
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+namespace org.authentication.whey
+/**
+ * My commodity trading network
+ */
+
+/**
+ * # enums + concepts 
+ */
+concept Address{
+  o String city optional
+  o String street optional
+  o String zip optional
+  o String country
+}
+  
+enum WheyType{
+  o CONCENTRATE
+  o ISOLATE
+  o HYDROLYZED
+}
+
+enum WheyFlavour {
+  o BANANA_CREAM
+  o CAFE_MOCHA
+  o COOKIES_AND_CREAM
+  o RICH_MILK_CHOCOLATE
+  o VANILLA	
+  o STRAWBERRY
+  o LIGHT
+  o MEDIUM
+  o DARK
+}
+
+enum WheySize {
+ o small 
+ o medium
+ o large
+}
+
+ 
+/**
+ * # Participants
+ */
+
+abstract participant Business  {
+  o String name
+  o Address address
+}
+
+/**
+ * # Participants
+ */
+
+participant Manufacturer identified by email extends Business {
+  o String email
+  
+}
+participant Retailer identified by email extends Business
+ {
+  o String email
+     
+}
+participant Distributor identified by email extends Business{
+  o String email
+}
+participant Middleman identified by email {
+  o String email
+  o Address arrivalplace
+  o Address deptplace
+  o String name
+}
+/**
+ * # Assets
+ */
+asset WheyProtein identified by assetKey {
+
+  o String assetKey
+  --> Business owner
+  o String ManufacturerDetails 
+  o transfertodistributor DistributorDetails optional
+  o transfertoretailer RetailerDetails optional
+  o sellWhey SellerDetails optional
+  o WheyType Type
+  o WheyFlavour Flavour
+  o WheySize Size 
+  o DateTime timeoftransaction }
+
+
+transaction OurSetupDemo {
+  
+}
+transaction transfertodistributor {
+ --> WheyProtein whey
+ --> Business distributor
+ o String DistributorId
+}
+transaction transfertoretailer{
+  --> WheyProtein whey
+  --> Business retailer}
+transaction addwhey{
+ 
+  o String email
+  o WheyType type
+  o WheyFlavour flavour
+  o WheySize size
+}
+transaction sellWhey{
+-->WheyProtein whey
+o String RetailerId
+}
+transaction addDistributor{
+  o String name
+  o String email
+  o String country
+}
+
+transaction addRetailer{
+  o String name
+  o String email
+  o String country
+}
